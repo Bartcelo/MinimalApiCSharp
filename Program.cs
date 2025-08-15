@@ -2,37 +2,75 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Minimal_Api.Dominio.DTOs;
+using Minimal_Api.Dominio.Entidades;
 using Minimal_Api.Dominio.Interfaces;
 using Minimal_Api.Dominio.ModelViews;
 using Minimal_Api.Dominio.Services;
 using Minimal_Api.Infraestrutura.Db;
 
+
+#region Buider
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAdministradorServico, AdministradorServico>();
+builder.Services.AddScoped<IVeiculoServico, VeiculoServico>();
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DbContexto>(options =>{
-options.UseMySql(
-    builder.Configuration.GetConnectionString("mysql"),
-    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
-    );
+builder.Services.AddDbContext<DbContexto>(options =>
+{
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("mysql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
+        );
 });
 
+
 var app = builder.Build();
+#endregion
 
+#region  Home
 app.MapGet("/", () => Results.Json(new Home()));
+#endregion
 
-app.MapPost("/login", ([FromBody]LoginDto loginDto , IAdministradorServico administradorServico) =>
+#region  Login
+app.MapPost("/login", ([FromBody] LoginDto loginDto, IAdministradorServico administradorServico) =>
 administradorServico.Login(loginDto) != null
     ? Results.Ok("Login realizado com sucesso")
     : Results.BadRequest("Acesso negado")
 );
+#endregion
 
+
+#region Veiculos
+app.MapPost("/veiculos", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
+{
+
+    var veiculo = new Veiculo
+    {
+        Nome = veiculoDto.Nome,
+        Marca = veiculoDto.Marca,
+        Ano = veiculoDto.Ano
+
+    };
+    veiculoServico.Incluir(veiculo);
+
+    return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
+
+
+
+});
+#endregion
+
+
+
+#region  App
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.Run();
-
+#endregion
 
