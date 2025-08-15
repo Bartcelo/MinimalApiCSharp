@@ -21,7 +21,7 @@ namespace Minimal_Api.Dominio.Entidades
         [StringLength(50)]
         public string Senha { get; set; }
 
-        [Required]
+     
         [StringLength(10)]
         public string Perfil { get; set; }
 
