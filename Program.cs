@@ -46,7 +46,7 @@ administradorServico.Login(loginDto) != null
 
 
 #region Veiculos
-app.MapPost("/veiculos", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
+app.MapPost("/veiculo", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
 {
 
     var veiculo = new Veiculo
@@ -64,7 +64,7 @@ app.MapPost("/veiculos", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veic
 
 }).WithTags("Veiculos");
 
-app.MapGet("/allveiculos", (int? Pagina, IVeiculoServico veiculoServico) =>
+app.MapGet("/veiculos", (int? Pagina, IVeiculoServico veiculoServico) =>
 {
 
     if (Pagina == null)
@@ -74,6 +74,16 @@ app.MapGet("/allveiculos", (int? Pagina, IVeiculoServico veiculoServico) =>
 
     var veiculos = veiculoServico.Todos((int)Pagina);
     return Results.Ok(veiculos);
+
+}).WithTags("Veiculos");
+
+app.MapGet("/veiculo/{id}", ([FromRoute]int id, IVeiculoServico veiculoServico) =>
+{
+    var veiculo = veiculoServico.BuscarPorId(id);
+
+    if (veiculo == null) return Results.NotFound();
+   
+    return Results.Ok(veiculo);
 
 }).WithTags("Veiculos");
 
