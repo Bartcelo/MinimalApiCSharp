@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Minimal_Api.Dominio.DTOs;
@@ -63,6 +63,20 @@ app.MapPost("/veiculos", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veic
 
 
 });
+
+app.MapGet("/allveiculos", (int? Pagina, IVeiculoServico veiculoServico) =>
+{
+
+    if (Pagina == null)
+    {
+        Pagina = 1;
+    }
+
+    var veiculos = veiculoServico.Todos((int)Pagina);
+    return Results.Ok(veiculos);
+
+});
+
 #endregion
 
 

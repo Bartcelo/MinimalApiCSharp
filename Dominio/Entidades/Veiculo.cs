@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Minimal_Api.Dominio.Entidades
 {
@@ -20,7 +18,7 @@ namespace Minimal_Api.Dominio.Entidades
         [Required]
         [StringLength(100)]
         public string Marca { get; set; }
-        
+
         [Required]
         [StringLength(10)]
         public int Ano { get; set; }

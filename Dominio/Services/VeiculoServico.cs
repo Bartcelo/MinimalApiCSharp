@@ -43,11 +43,11 @@ namespace Minimal_Api.Dominio.Services
             _contexto.SaveChanges();
         }
 
-        public List<Veiculo> Todos(int pagina = 1, string nome = null, string marca = null)
+        public List<Veiculo> Todos(int pagina, string nome = null, string marca = null)
         {
            
             int itensPorPagina = 10;
-            int pular = (pagina - 1) * itensPorPagina;
+            int pular =  (pagina - 1) * itensPorPagina;
 
            
             var query = _contexto.Veiculos.AsQueryable();
