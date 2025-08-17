@@ -46,8 +46,32 @@ administradorServico.Login(loginDto) != null
 
 
 #region Veiculos
+ErrosDeValidacao validaDTO(VeiculoDto veiculoDto)
+{
+
+    var validacao = new ErrosDeValidacao
+    {
+        Mensagens = []
+    };
+
+    if (string.IsNullOrEmpty(veiculoDto.Nome))
+        validacao.Mensagens.Add("O nome não é valido");
+    if (string.IsNullOrEmpty(veiculoDto.Marca))
+        validacao.Mensagens.Add("O Marca não é valida");
+    if (veiculoDto.Ano < 1950)
+        validacao.Mensagens.Add("O ano do veiculo deve ser  superior a 1950");
+
+   
+    return validacao;
+
+}
+
 app.MapPost("/veiculo", ([FromBody] VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
 {
+
+    var validacao = validaDTO(veiculoDto);
+    if (validacao.Mensagens.Count > 0)
+        return  Results.BadRequest(validacao);
 
     var veiculo = new Veiculo
     {
@@ -91,8 +115,11 @@ app.MapGet("/veiculo/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico)
 app.MapPut("/veiculo/{id}", ([FromRoute] int id, VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
 {
     var veiculo = veiculoServico.BuscarPorId(id);
-
     if (veiculo == null) return Results.NotFound();
+
+    var validacao = validaDTO(veiculoDto);
+    if (validacao.Mensagens.Count > 0)
+        return  Results.BadRequest(validacao);
 
     veiculo.Nome = veiculoDto.Nome;
     veiculo.Marca = veiculoDto.Marca;
