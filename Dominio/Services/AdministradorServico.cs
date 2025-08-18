@@ -12,7 +12,7 @@ namespace Minimal_Api.Dominio.Services
 {
     public class AdministradorServico : IAdministradorServico
     {
-        private readonly DbContexto _contexto;
+
 
         public AdministradorServico(DbContexto contexto)
         {
@@ -20,10 +20,39 @@ namespace Minimal_Api.Dominio.Services
 
 
         }
+        private readonly DbContexto _contexto;
+
         public Administrador Login(LoginDto loginDto)
         {
             var administradorLogado = _contexto.Administradores.Where(a => a.Email == loginDto.Email && a.Senha == loginDto.Password).FirstOrDefault();
             return administradorLogado;
+        }
+
+        public void Incluir(Administrador administrador)
+        {
+            _contexto.Administradores.Add(administrador);
+            _contexto.SaveChanges();
+
+        }
+
+
+
+        public List<Administrador> Todos(int pagina = 1)
+        {
+            int itensPorPagina = 10;
+            int pular = (pagina - 1) * itensPorPagina;
+
+            var query = _contexto.Administradores.AsQueryable();
+
+            return query.OrderBy(v => v.Id)
+                      .Skip(pular)
+                      .Take(itensPorPagina)
+                      .ToList();
+        }
+
+        public Administrador BuscarPorId(int id)
+        {
+            return _contexto.Administradores.Find(id);
         }
     }
 }

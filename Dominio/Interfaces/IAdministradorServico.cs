@@ -11,6 +11,10 @@ namespace Minimal_Api.Dominio.Interfaces
     {
         Administrador Login(LoginDto loginDto);
 
+         List<Administrador> Todos (int pagina = 1);
+
+         void Incluir(Administrador administrador);
+         Administrador BuscarPorId(int id);
         
     }
 }
