@@ -12,6 +12,8 @@ using Minimal_Api.Dominio.Interfaces;
 using Minimal_Api.Dominio.ModelViews;
 using Minimal_Api.Dominio.Services;
 using Minimal_Api.Infraestrutura.Db;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 
 #region Buider
@@ -90,8 +92,8 @@ internal class Program
         #region  Home
 
 
-   
-       
+
+
         app.MapGet("/", () => Results.Json(new Home())).AllowAnonymous().WithTags("Home");
         #endregion
 
@@ -107,6 +109,8 @@ internal class Program
             {
                 new("Email", administrador.Email),
                 new("Perfil", administrador.Perfil ),
+                new( ClaimTypes.Role, administrador.Perfil)
+
 
             };
 
@@ -187,7 +191,7 @@ internal class Program
 
         }
 
-        ).RequireAuthorization().WithTags("Login");
+        ).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm" }).WithTags("Login");
 
         app.MapGet("/administradores", ([FromQuery] int? Pagina, IAdministradorServico administradorServico) =>
         {
@@ -212,7 +216,7 @@ internal class Program
             return Results.Ok(administrador);
 
 
-        }).RequireAuthorization().WithTags("Login");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm" }).WithTags("Login");
 
 
         app.MapGet("/administrador/{id}", ([FromRoute] int id, IAdministradorServico administradorServico) =>
@@ -231,7 +235,7 @@ internal class Program
 
             return Results.Ok(administradorId);
 
-        }).RequireAuthorization().WithTags("Login");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm" }).WithTags("Login");
 
         #endregion
 
@@ -276,7 +280,7 @@ internal class Program
 
 
 
-        }).RequireAuthorization().WithTags("Veiculos");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm,Editor" }).WithTags("Veiculos");
 
         app.MapGet("/veiculos", (int? Pagina, IVeiculoServico veiculoServico) =>
         {
@@ -299,7 +303,7 @@ internal class Program
 
             return Results.Ok(veiculo);
 
-        }).RequireAuthorization().WithTags("Veiculos");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm,Editor" }).WithTags("Veiculos");
 
 
         app.MapPut("/veiculo/{id}", ([FromRoute] int id, VeiculoDto veiculoDto, IVeiculoServico veiculoServico) =>
@@ -319,7 +323,7 @@ internal class Program
 
             return Results.Ok(veiculo);
 
-        }).RequireAuthorization().WithTags("Veiculos");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm" }).WithTags("Veiculos");
 
 
 
@@ -334,7 +338,7 @@ internal class Program
 
             return Results.NoContent();
 
-        }).RequireAuthorization().WithTags("Veiculos");
+        }).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute {Roles ="Adm" }).WithTags("Veiculos");
 
         #endregion
 
