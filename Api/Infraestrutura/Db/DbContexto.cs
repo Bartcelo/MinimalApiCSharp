@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Minimal_Api.Dominio.Entidades;
 
 namespace Minimal_Api.Infraestrutura.Db
@@ -16,6 +17,8 @@ namespace Minimal_Api.Infraestrutura.Db
 
         public DbSet<Administrador> Administradores { get; set; }
         public DbSet<Veiculo> Veiculos { get; set; }
+
+        public IConfiguration ConfigurationAppSetings => _configurationAppSetings;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,7 +38,7 @@ namespace Minimal_Api.Infraestrutura.Db
             if (!optionsBuilder.IsConfigured)
             {
 
-                var stringConexao = _configurationAppSetings.GetConnectionString("mysql").ToString();
+                var stringConexao = ConfigurationAppSetings.GetConnectionString("mysql").ToString();
                 if (!string.IsNullOrEmpty(stringConexao))
                 {
                     optionsBuilder.UseMySql(
