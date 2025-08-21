@@ -113,6 +113,7 @@ namespace Minimal_Api
                 #region  Home
 
                 endpoints.MapGet("/", () => Results.Json(new Home())).AllowAnonymous().WithTags("Home");
+               
                 #endregion
 
                 #region  Administradores
